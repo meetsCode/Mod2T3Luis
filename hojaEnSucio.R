@@ -347,7 +347,17 @@ plot(testPredLM1,testing$TotalSolarRad)
 
 
 
+
+
+
+
+
+# separador de punto ------------------------------------------------------
+
+
+
 #### 3. Create Predictive Model Using k-Nearest-Neighbor ####
+
 #### 3.1 Import and familiarize yourself with the training set.  ####
 # The file Survey_Responses_Complete is an CSV file that includes answers to 
 # all the questions in the market research survey, including which brand of 
@@ -368,6 +378,7 @@ dataFormated <- dataRaw
 
 dataFormated$salary <- round(dataRaw$salary, digits = 2)
 #dataFormated$age <- factor(dataRaw$age) #Lo hago???
+
 dataFormated$elevel <- factor(dataRaw$elevel, levels = c(0, 1, 2, 3, 4),
                               labels = c("Less_than_High_School_Degree", "High_School_Degree", 
                                          "Some_College", "x4_Year_College_Degree", 
@@ -395,7 +406,45 @@ dataFormated$brand <- factor(dataRaw$brand, levels = 0:1,
 
 
 
-source("absorcionYPreparacionDatos.R", echo = TRUE)
+
+#### Las instancias son correctas? #### 
+#debo buscar datos raros o fuera de lo común. No debo fiarme: líneas que están repetidas o con NA
+str(dataFormated) # parece en orden el formato
+summary(dataFormated) # parece en orden el formato y las cifras
+boxplot(dataFormated)  # Esto qué hace? Algo muestra pero no veo el qué.
+which(!complete.cases(dataFormated) )  # Esto qué hace? Algo muestra pero no veo el qué.
+which(is.na(dataFormated)) # Bien! da 0 valores
+
+#busco los outliers de cada columna. Los busco en comparación con el dato a adivinar: 
+plot(dataFormated) # no me aclaro con esta gráfica. Tarda mucho en pintarla.
+plot(dataFormated$salary) #homogéneo distribución
+plot(dataFormated$age) #homogéneo distribución
+plot(dataFormated$elevel) #homogénea distribución
+plot(dataFormated$car)  #homogénea distribución
+plot(dataFormated$zipcode) #homogénea distribución
+plot(dataFormated$credit) #homogénea distribución
+plot(dataFormated$brand) # hay muchas más sony que Acer pero de ambos suficientes instancias.
+
+#Filas tramposas. 
+# No sé cómo detectarlas. Como es un número tan grande lo dejo estar.
+
+#Operaciones correctas.
+# En estos datos no hay operaciones que sean resultados de las columnas
+
+#Outliers
+# Compararé todos los campos con la variable dependiente a ver si veo algo sospechoso.
+plot(dataFormated, dataFormated$brand) # no me aclaro con esta gráfica. Tarda mucho en pintarla.
+plot(dataFormated$salary, dataFormated$brand) #homogéneo distribución
+plot(dataFormated$age, dataFormated$brand) #homogéneo distribución
+plot(dataFormated$eleve, dataFormated$brandl) #homogénea distribución
+plot(dataFormated$car, dataFormated$brand)  #homogénea distribución. más sony que Acer pero de ambos suficientes instancias
+plot(dataFormated$zipcode, dataFormated$brand) #homogénea distribución
+plot(dataFormated$credit, dataFormated$brand) #homogénea distribución
+plot(dataFormated$brand, dataFormated$brand) # Porqué esta no me da una diagonal o algo así? No entiendo la representación.
+
+#hay colunmas correlacionadas?
+cor(dataFormated[c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas.
+
 
 
 #### 3.2 Using createDataPartition create training and testing sets.  ####
@@ -403,6 +452,22 @@ source("absorcionYPreparacionDatos.R", echo = TRUE)
 # training data should represent 75% of the total data and the remaining 25% 
 # will be used for testing. After optimizing your model you'll later use it to 
 # make predictions on the incomplete surveys.
+#creo el train y test Set:
+
+#Compruebo ¿Cómo incluyo los datos en el modelo?
+
+#¿Cómo incluyo los datos en el modelo?
+
+#Creo un modelo para poder rellenar las que faltan del otro fichero
+
+
+
+ctrl <- trainControl(method="repeatedcv", number=10, repeats=3)
+set.seed(12345)
+knnFit1 <- train(diagnosis ~ ., data=wdbc_train, method="knn",
+                 trControl=ctrl, metric="Accuracy", tuneLength=20,
+                 preProc=c("range"))
+knnFit1
 
 
 
@@ -427,4 +492,8 @@ source("absorcionYPreparacionDatos.R", echo = TRUE)
 # Assess the performance of the predictive model and record the Accuracy and Kappa scores.
 
 
+#### capítulo ####
 
+
+
+#### capitulo  ####
