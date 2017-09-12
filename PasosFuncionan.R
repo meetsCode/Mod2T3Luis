@@ -100,5 +100,70 @@ cor(dataFormated[c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas.
 # training data should represent 75% of the total data and the remaining 25% 
 # will be used for testing. After optimizing your model you'll later use it to 
 # make predictions on the incomplete surveys.
-#creo el train y test Set:
+#creo el train y test Set: 
+
+set.seed(1234)
+trainPosition <- createDataPartition(dataFormated$brand, p = .75, list = FALSE)
+trainSet <- dataFormated[trainPosition,]
+testSet <- dataFormated[-trainPosition,]
+#Lo chulo sería aquí comprobar si se ha repartido equitativamente las dos clases dependientes.
+
+
+
+
+#### 3.3 Run the KNN classifier on the training set with 10-fold cross validation.  ####
+# In the task one, you used KNN to predict a specific numeric value (the sales volume of a 
+# new product); in this task you will use the KNN classifier to predict nominal data (a 
+# customer's computer brand preference). The main difference is that, in numeric prediction, 
+# you are inferring a real number (such as how many products may be sold in a period of time) 
+# while, in nominal (or categorical) prediction, you are selecting what class a given observation 
+# belongs to. Remember that the data mining algorithms make the prediction in both types of 
+# tasks based on the similarities and differences between the attributes (columns) of observations (rows). 
+# You will be classifying "brand" in this task. After running KNN:
+# Assess the performance of the trained model and record the Accuracy and Kappa scores for each K value 
+# the model used during training.
+
+#Me hubiera gustado usar Random Forest porque usa árboles de clasificación y eso es justo lo que 
+# aprendí a usar para predecir el tipo de clientes. Sin embargo quieren que usemo KNN porque también 
+# sirve para predecir valores contínuos (como hice en la práctica anterior) sino discretos.
+
+#10 fold cross validation
+set.seed(1234)
+fitControl <- trainControl(method = "repeatedcv", number = 10, repeats = 10)
+knnModel <- train(brand ~.,
+                  data=trainSet,
+                  method="knn",
+                  trControl=fitControl,
+                  preProcess=c("center","scale"),
+                  tuneLength=10)
+knnModel
+#predictor variables
+predictors(knnModel)
+
+
+
+#### 3.4 Make predictions.  ####
+# Using the KNN model you just built and the testing set created previously make predictions 
+# using the predict() function. After making the predictions using the testing set use 
+# postResample() to assess the metrics of the new predictive model. 
+# Assess the performance of the predictive model and record the Accuracy and Kappa scores.
+
+#make predictions
+examenModelo <- predict(knnModel, testSet)
+
+#performace measurment
+postResample(examenModelo, testSet$brand)
+
+# Accuracy      Kappa 
+# 0.60304122 0.06136794
+# Esto es más o menos que lo de antes? K=19  0.6022682  0.06497997 ? parece igual ¿Lo es?
+
+#plot predicted verses actual
+plot(examenModelo, testSet$brand)
+
+
+
+
+
+
 

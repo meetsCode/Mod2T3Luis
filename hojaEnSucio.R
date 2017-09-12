@@ -448,11 +448,56 @@ cor(dataFormated[c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas.
 
 
 #### 3.2 Using createDataPartition create training and testing sets.  ####
+
 # These will be created from the Survey Responses Complete.csv file. The 
 # training data should represent 75% of the total data and the remaining 25% 
 # will be used for testing. After optimizing your model you'll later use it to 
 # make predictions on the incomplete surveys.
 #creo el train y test Set:
+# define an 75%/25% train/test split of the dataset
+set.seed(1234)
+trainPosition <- createDataPartition(dataFormated$brand, p = .75, list = FALSE)
+trainSet <- dataFormated[trainPosition,]
+testSet <- dataFormated[-trainPosition,]
+#Lo chulo sería aquí comprobar si se ha repartido equitativamente las dos clases dependientes.
+
+#Me hubiera gustado usar Random Forest porque usa árboles de clasificación y eso es justo lo que 
+# aprendí a usar para predecir el tipo de clientes. Sin embargo quieren que usemo KNN porque también 
+# sirve para predecir valores contínuos (como hice en la práctica anterior) sino discretos.
+
+#10 fold cross validation
+set.seed(1234)
+fitControl <- trainControl(method = "repeatedcv", number = 10, repeats = 10)
+knnModel <- train(brand ~.,
+                  data=trainSet,
+                  method="knn",
+                  trControl=fitControl,
+                  preProcess=c("center","scale"),
+                  tuneLength=10)
+knnModel
+#predictor variables
+predictors(knnModel)
+
+
+# ctrl <- trainControl(method="repeatedcv", number=10, repeats=3)
+# set.seed(12345)
+# knnFit1 <- train(diagnosis ~ ., data=wdbc_train, method="knn",
+#                  trControl=ctrl, metric="Accuracy", tuneLength=20,
+#                  preProc=c("range"))
+# knnFit1
+
+
+# 
+# library(randomForest)
+# model <- randomForest(formula = dataFormated$Volume ~ . , 
+#                       data = trainSet, 
+#                       importance=TRUE,
+#                       proximity=TRUE)
+# 
+# summary(model)
+# return(model)
+
+
 
 #Compruebo ¿Cómo incluyo los datos en el modelo?
 
@@ -461,13 +506,13 @@ cor(dataFormated[c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas.
 #Creo un modelo para poder rellenar las que faltan del otro fichero
 
 
-
-ctrl <- trainControl(method="repeatedcv", number=10, repeats=3)
-set.seed(12345)
-knnFit1 <- train(diagnosis ~ ., data=wdbc_train, method="knn",
-                 trControl=ctrl, metric="Accuracy", tuneLength=20,
-                 preProc=c("range"))
-knnFit1
+# 
+# ctrl <- trainControl(method="repeatedcv", number=10, repeats=3)
+# set.seed(12345)
+# knnFit1 <- train(diagnosis ~ ., data=wdbc_train, method="knn",
+#                  trControl=ctrl, metric="Accuracy", tuneLength=20,
+#                  preProc=c("range"))
+# knnFit1
 
 
 
@@ -490,6 +535,22 @@ knnFit1
 # using the predict() function. After making the predictions using the testing set use 
 # postResample() to assess the metrics of the new predictive model. 
 # Assess the performance of the predictive model and record the Accuracy and Kappa scores.
+
+
+source("PasosFuncionan.R", echo = TRUE)
+if(!is.null(dev.list())) dev.off() 
+
+
+#make predictions
+examenModelo <- predict(knnModel, testSet)
+
+#performace measurment
+postResample(examenModelo, testSet$brand)
+
+#plot predicted verses actual
+plot(examenModelo, testSet$brand)
+
+
 
 
 #### capítulo ####
