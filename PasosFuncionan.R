@@ -130,6 +130,7 @@ testSet <- dataFormated[-trainPosition,]
 #10 fold cross validation
 set.seed(1234)
 fitControl <- trainControl(method = "repeatedcv", number = 10, repeats = 10)
+
 knnModel <- train(brand ~.,
                   data=trainSet,
                   method="knn",
@@ -148,18 +149,16 @@ predictors(knnModel)
 # postResample() to assess the metrics of the new predictive model. 
 # Assess the performance of the predictive model and record the Accuracy and Kappa scores.
 
-#make predictions
-examenModelo <- predict(knnModel, testSet)
-
-#performace measurment
-postResample(examenModelo, testSet$brand)
+examenModelo <- predict(knnModel, testSet)  #make predictions
+postResample(examenModelo, testSet$brand)  #performace measurment
 
 # Accuracy      Kappa 
-# 0.60304122 0.06136794
+# 0.60304122  0.06136794
 # Esto es más o menos que lo de antes? K=19  0.6022682  0.06497997 ? parece igual ¿Lo es?
 
-#plot predicted verses actual
-plot(examenModelo, testSet$brand)
+plot(examenModelo, testSet$brand) #plot predicted verses actual
+# Esto es como la matriz de confusión pero puesto en modo gráfico. 
+# ¡Ojo! que la diagonal gráfica hay que leerla con la diagonal contraria a cuando se muestra con datos.
 
 
 

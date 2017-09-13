@@ -541,14 +541,12 @@ source("PasosFuncionan.R", echo = TRUE)
 if(!is.null(dev.list())) dev.off() 
 
 
-#make predictions
-examenModelo <- predict(knnModel, testSet)
 
-#performace measurment
-postResample(examenModelo, testSet$brand)
-
-#plot predicted verses actual
-plot(examenModelo, testSet$brand)
+examenModelo <- predict(knnModel, testSet)  #make predictions
+postResample(examenModelo, testSet$brand)  #performace measurment
+plot(examenModelo, testSet$brand) #plot predicted verses actual
+# Esto es como la matriz de confusión pero puesto en modo gráfico. 
+# Ojo que la diagonal hay que leerla con la diagonal contraria.
 
 
 
