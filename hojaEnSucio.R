@@ -547,9 +547,20 @@ postResample(examenModelo, testSet$brand)  #performace measurment
 plot(examenModelo, testSet$brand) #plot predicted verses actual
 # Esto es como la matriz de confusión pero puesto en modo gráfico. 
 # Ojo que la diagonal hay que leerla con la diagonal contraria.
+pander(prop.table(table(testSet$brand)), 
+       style="rmarkdown", 
+       caption="Original frequencies (%)")
+ 
 
 
 
+knnModel <- train(brand ~.,
+                  data=trainSet,
+                  method="rf",
+                  trControl=fitControl,
+                  #preProcess=c("center","scale"),
+                  metric="Accuracy",
+                  tuneLength=3)
 
 #### capítulo ####
 

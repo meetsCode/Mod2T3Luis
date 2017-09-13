@@ -14,7 +14,7 @@ if(!is.null(dev.list())) dev.off() #pone a cero las ventanas de plot y si no hay
 #install.packages("caret")
 #install.packages("caret", dependencies = c("Depends", "Suggests")) 
 library(caret)
-
+library(pander)
 
 
 #### 3.1.2 Absorcion datos ####
@@ -102,7 +102,7 @@ cor(dataFormated[c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas.
 # make predictions on the incomplete surveys.
 #creo el train y test Set: 
 
-set.seed(1234)
+set.seed(998)
 trainPosition <- createDataPartition(dataFormated$brand, p = .75, list = FALSE)
 trainSet <- dataFormated[trainPosition,]
 testSet <- dataFormated[-trainPosition,]
@@ -128,7 +128,6 @@ testSet <- dataFormated[-trainPosition,]
 # sirve para predecir valores contínuos (como hice en la práctica anterior) sino discretos.
 
 #10 fold cross validation
-set.seed(1234)
 fitControl <- trainControl(method = "repeatedcv", number = 10, repeats = 10)
 
 knnModel <- train(brand ~.,
@@ -140,7 +139,7 @@ knnModel <- train(brand ~.,
 knnModel
 #predictor variables
 predictors(knnModel)
-
+#ver las soluciones en el Wiki: 
 
 
 #### 3.4 Make predictions.  ####
@@ -159,10 +158,29 @@ postResample(examenModelo, testSet$brand)  #performace measurment
 plot(examenModelo, testSet$brand) #plot predicted verses actual
 # Esto es como la matriz de confusión pero puesto en modo gráfico. 
 # ¡Ojo! que la diagonal gráfica hay que leerla con la diagonal contraria a cuando se muestra con datos.
+confusionMatrix(examenModelo, testSet$brand)
+# Reference
+# Prediction Acer Sony
+# Acer  254  267
+# Sony  691 1287
+
+pander(prop.table(table(testSet$brand)), 
+       style="rmarkdown", 
+       caption="Original frequencies (%)")
 
 
 
 
 
+
+
+knnModel <- train(brand ~.,
+                  data=trainSet,
+                  method="rf",
+                  trControl=fitControl,
+                  #preProcess=c("center","scale"),
+                  metric="Accuracy",
+                  tuneLength=3)
+# ¡Ojo! Este proceso dura una hora y media justas!!!!!!!
 
 
