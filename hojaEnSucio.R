@@ -562,8 +562,27 @@ knnModel <- train(brand ~.,
                   metric="Accuracy",
                   tuneLength=3)
 
+
 #### capítulo ####
 
 
+
+DecisionTreeModel <- train(brand ~.,
+                  data=trainSet,
+                  method="C5.0",
+                  trControl=fitControl,
+                  #preProcess=c("center","scale"),
+                  metric="Accuracy",
+                  tuneLength=3)
+
+
+DecisionTreeModel
+pander( head(dataFormated) , style="rmarkdown", caption="Original diagnosis frequencies (%)")
+
+# predict
+# interval = 
+# level =
+
+edaPlot(trainSet)
 
 #### capitulo  ####

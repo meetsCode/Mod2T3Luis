@@ -12,9 +12,11 @@ if(!is.null(dev.list())) dev.off() #pone a cero las ventanas de plot y si no hay
 
 #### 3.1.1 Librarys ####
 #install.packages("caret")
-#install.packages("caret", dependencies = c("Depends", "Suggests")) 
+#install.packages("caret", dependencies = c("Depends", "Suggests"))
+#install.packages("edaplot")
 library(caret)
 library(pander)
+library(edaplot)
 
 
 #### 3.1.2 Absorcion datos ####
@@ -68,7 +70,7 @@ plot(dataFormated) # no me aclaro con esta gráfica. Tarda mucho en pintarla.
 plot(dataFormated$salary) #homogéneo distribución
 plot(dataFormated$age) #homogéneo distribución
 plot(dataFormated$elevel) #homogénea distribución
-plot(dataFormated$car)  #homogénea distribución
+plot(dataFormated$car)  #homogénea distribución 
 plot(dataFormated$zipcode) #homogénea distribución
 plot(dataFormated$credit) #homogénea distribución
 plot(dataFormated$brand) # hay muchas más sony que Acer pero de ambos suficientes instancias.
@@ -91,9 +93,8 @@ plot(dataFormated$credit, dataFormated$brand) #homogénea distribución
 plot(dataFormated$brand, dataFormated$brand) # Porqué esta no me da una diagonal o algo así? No entiendo la representación.
 
 #hay colunmas correlacionadas?
-cor(dataFormated[c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas.
+cor(dataFormated[c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas. No incluyo las categóricas.
 
-#if(!is.null(dev.list())) dev.off() 
 
 #### 3.2 Using createDataPartition create training and testing sets.  ####
 # These will be created from the Survey Responses Complete.csv file. The 
@@ -173,8 +174,7 @@ pander(prop.table(table(testSet$brand)),
 
 
 
-
-knnModel <- train(brand ~.,
+modelRF <- train(brand ~.,
                   data=trainSet,
                   method="rf",
                   trControl=fitControl,
@@ -182,5 +182,36 @@ knnModel <- train(brand ~.,
                   metric="Accuracy",
                   tuneLength=3)
 # ¡Ojo! Este proceso dura una hora y media justas!!!!!!!
+examenModeloRF <- predict(modelRF, testSet)  #make predictions
+postResample(examenModeloRF, testSet$brand)  #performace measurment
+
+# Accuracy      Kappa 
+# 0.60304122  0.06136794
+# Esto es más o menos que lo de antes? K=19  0.6022682  0.06497997 ? parece igual ¿Lo es?
+
+plot(examenModeloRF, testSet$brand) #plot predicted verses actual
+# Esto es como la matriz de confusión pero puesto en modo gráfico. 
+# ¡Ojo! que la diagonal gráfica hay que leerla con la diagonal contraria a cuando se muestra con datos.
+confusionMatrix(examenModeloRF, testSet$brand)
 
 
+#### 3.?? árbol de clasificacion
+#tiene sentido hace un KNN o un SVM para predecir? Y con lo predicho completar?
+# ¿Qué es lo que quiere saber quien compra qué?
+# para eso mejor un árbol de decisión.
+# J48 ya lo he hecho con WEKA ahora un 5.0 con R:
+# EnJ48 me ha salido claramente que el sueldo es el principal divisor y 
+# dentro de algunas franjas de sueldo la edad.
+# veamos: 
+
+DecisionTreeModel <- train(brand ~.,
+                           data=trainSet,
+                           method="C5.0",
+                           trControl=fitControl,
+                           #preProcess=c("center","scale"),
+                           metric="Accuracy",
+                           tuneLength=3)
+
+
+source("rf998y1234.R", echo = TRUE)
+source("knn998y1234.R", echo = TRUE)
