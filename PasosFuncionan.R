@@ -16,7 +16,10 @@ if(!is.null(dev.list())) dev.off() #pone a cero las ventanas de plot y si no hay
 #install.packages("edaplot")
 library(caret)
 library(pander)
-library(edaplot)
+#library(edaplot)
+
+library(doMC)      #install.packages("doMC")   para poder usar los dos cores del procesador
+registerDoMC(cores=2) #En el ejercicio son 4 pero yo solo tengo 2 en este Mac
 
 
 #### 3.1.2 Absorcion datos ####
@@ -64,6 +67,7 @@ summary(dataFormated) # parece en orden el formato y las cifras
 boxplot(dataFormated)  # Esto qué hace? Algo muestra pero no veo el qué.
 which(!complete.cases(dataFormated) )  # Esto qué hace? Algo muestra pero no veo el qué.
 which(is.na(dataFormated)) # Bien! da 0 valores
+dataFormated[order(dataFormated$age), ] #sirve para verlos pordenados por una columna.
 
 #busco los outliers de cada columna. Los busco en comparación con el dato a adivinar: 
 plot(dataFormated) # no me aclaro con esta gráfica. Tarda mucho en pintarla.
