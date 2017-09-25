@@ -1,4 +1,4 @@
-#!RStudio
+#!Rscript
 #run me: source("knn998y1234.R", echo = TRUE)
 
 
@@ -23,6 +23,7 @@ postResample(examenModelo998, testSet$brand)  #performace measurment
 
 
 
+ 
 
 set.seed(1234)
 trainPosition <- createDataPartition(dataFormated$brand, p = .75, list = FALSE)
@@ -103,7 +104,14 @@ postResample(examenModelo1234, testSet$brand)  #performace measurment
 # 
 # Accuracy (average) : 0.6005
 
-
+#
+infoRecogida$nombre <- c(infoRecogida$nombre, 'KNN1234' )
+infoRecogida$semilla <- c(infoRecogida$semilla, 1234 )
+infoRecogida$k <- c(infoRecogida$k, 19)
+infoRecogida$trainAcc <- c(infoRecogida$trainAcc, 0.6004803)
+infoRecogida$trainKappa <- c(infoRecogida$trainKappa, 0.06031919)
+infoRecogida$testAcc <- c(infoRecogida$testAcc, 0.60304122)
+infoRecogida$testKappa <- c(infoRecogida$testKappa, 0.06136794)
 
 
 

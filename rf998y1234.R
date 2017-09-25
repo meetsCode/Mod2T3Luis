@@ -1,8 +1,8 @@
-#!RStudio
+#!Rscript
 #run me: source("rf998y1234.R", echo = TRUE)
 
 
-
+#### calculadon modelos de Random Forest ####
 set.seed(998)
 trainPosition <- createDataPartition(dataFormated$brand, p = .75, list = FALSE)
 trainSet <- dataFormated[trainPosition,]
@@ -102,6 +102,15 @@ postResample(examenModeloRF1234, testSet$brand)  #performace measurment
 # Accuracy (average) : 0.9225
 
 
+infoRecogida$nombre <- c(infoRecogida$nombre, 'RF1234' )
+infoRecogida$semilla <- c(infoRecogida$semilla, 1234 )
+infoRecogida$k <- c(infoRecogida$k, NA)
+infoRecogida$trainAcc <- c(infoRecogida$trainAcc, 0.9224516)
+infoRecogida$trainKappa <- c(infoRecogida$trainKappa, 0.8352687536)
+infoRecogida$testAcc <- c(infoRecogida$testAcc, 0.9231693)
+infoRecogida$testKappa <- c(infoRecogida$testKappa, 0.8373113)
+
+
 #### resultados modelRF998 ####
 
 # 
@@ -159,6 +168,13 @@ postResample(examenModeloRF1234, testSet$brand)  #performace measurment
 # Accuracy (average) : 0.9225
 
 
+infoRecogida$nombre <- c(infoRecogida$nombre, 'RF998' )
+infoRecogida$semilla <- c(infoRecogida$semilla, 1234 )
+infoRecogida$k <- c(infoRecogida$k, NA)
+infoRecogida$trainAcc <- c(infoRecogida$trainAcc, 0.9224898  )
+infoRecogida$trainKappa <- c(infoRecogida$trainKappa, 0.8352859)
+infoRecogida$testAcc <- c(infoRecogida$testAcc, 0.51660664)
+infoRecogida$testKappa <- c(infoRecogida$testKappa, -0.02485278)
 
 
 
@@ -174,19 +190,21 @@ postResample(examenModeloRF1234, testSet$brand)  #performace measurment
 
 
 #### imprimiendo todo para markdown ####
-modelo <- c('knn998', 'knn1234', 'RF998', 'RF1234' )
-semilla <- c(998, 1234, 998, 1234)
-k <- c(15,19, NA, NA )
-AccTrain <- c(0 , 0 , 0.9224898 , 0.9224516)
-KappaTrain <- c(0 , 0 , 0.8352859,   0.8352687536)
-AccTest <- c(0 , 0 , 0.51660664, 0.9231693)
-KappaTest <- c(0 , 0 , -0.02485278, 0.8373113)
-
-
-resumen <- data.frame(modelo, semilla, k, AccTrain, KappaTrain, AccTest, KappaTest)
-pander(resumen, 
+infoRecogida$datos <- NULL
+matriz <- matrix(unlist(infoRecogida), nrow = 4)
+df <- data.frame(matriz)
+# colnames(df) <- ls(infoRecogida) pero me los da desordenados.
+colnames(df) <- c('modelo', 'semilla', 'k', 'AccTrain', 'KappaTrain', 'AccTest', 'KappaTest')
+pander(df, 
        style="rmarkdown", 
        caption="Resumen errores")
 
+# 
+# | modelo  | semilla | k  | AccTrain  |  KappaTrain  |  AccTest   |  KappaTest  |
+# |:-------:|:-------:|:--:|:---------:|:------------:|:----------:|:-----------:|
+# | KNN998  |   998   | 15 | 0.5989332 |  0.06539664  | 0.6166467  |  0.1063153  |
+# | KNN1234 |  1234   | 19 | 0.6004803 |  0.06031919  | 0.60304122 | 0.06136794  |
+# | RF1234  |  1234   | NA | 0.9224516 | 0.8352687536 | 0.9231693  |  0.8373113  |
+# |  RF998  |  1234   | NA | 0.9224898 |  0.8352859   | 0.51660664 | -0.02485278 |
 
-
+modelRF1234

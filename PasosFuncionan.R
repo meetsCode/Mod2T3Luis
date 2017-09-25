@@ -1,4 +1,4 @@
-#!RStudio
+#!Rscript
 #run me: source("PasosFuncionan.R", echo = TRUE)
 
 # Pre inicio:
@@ -18,8 +18,25 @@ library(caret)
 library(pander)
 #library(edaplot)
 
-library(doMC)      #install.packages("doMC")   para poder usar los dos cores del procesador
-registerDoMC(cores=2) #En el ejercicio son 4 pero yo solo tengo 2 en este Mac
+# library(doMC)      #install.packages("doMC")   para poder usar los dos cores del procesador
+# registerDoMC(cores=2) #En el ejercicio son 4 pero yo solo tengo 2 en este Mac
+infoRecogida <- list()
+infoRecogida$nombre <- c( )
+infoRecogida$semilla <- c( )
+infoRecogida$k <- c( )
+infoRecogida$trainAcc <- c( )
+infoRecogida$trainKappa <- c( )
+infoRecogida$testAcc <- c( )
+infoRecogida$testKappa <- c( )
+# uso:
+# infoRecogida$nombre <- c(infoRecogida$nombre,  )
+# infoRecogida$semilla <- c(infoRecogida$semilla,  )
+# infoRecogida$k <- c(infoRecogida$k, )
+# infoRecogida$trainAcc <- c(infoRecogida$trainAcc, )
+# infoRecogida$trainKappa <- c(infoRecogida$trainKappa, )
+# infoRecogida$testAcc <- c(infoRecogida$testAcc, )
+# infoRecogida$testKappa <- c(infoRecogida$testKappa, )
+
 
 
 #### 3.1.2 Absorcion datos ####
@@ -57,6 +74,8 @@ dataFormated$credit <- as.integer(dataRaw$credit)
 
 dataFormated$brand <- factor(dataRaw$brand, levels = 0:1,
                              labels = c("Acer", "Sony"))
+
+infoRecogida$datos <- c(lengths(dataFormated), length(dataFormated))
 
 
 
