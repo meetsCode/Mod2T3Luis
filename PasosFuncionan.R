@@ -16,6 +16,7 @@ if(!is.null(dev.list())) dev.off() #pone a cero las ventanas de plot y si no hay
 #install.packages("edaplot")
 library(caret)
 library(pander)
+library(ggplot2)
 #library(edaplot)
 
 # library(doMC)      #install.packages("doMC")   para poder usar los dos cores del procesador
@@ -97,6 +98,12 @@ plot(dataFormated$car)  #homogénea distribución
 plot(dataFormated$zipcode) #homogénea distribución
 plot(dataFormated$credit) #homogénea distribución
 plot(dataFormated$brand) # hay muchas más sony que Acer pero de ambos suficientes instancias.
+qplot (x=dataFormated$salary, 
+       y=dataFormated$age,
+       data=dataFormated,
+       color=brand,
+       xlab="salario",ylab="edad",
+       main="Dos primeras claves del árbol de decisión")
 
 #Filas tramposas. 
 # No sé cómo detectarlas. Como es un número tan grande lo dejo estar.
@@ -116,8 +123,9 @@ plot(dataFormated$credit, dataFormated$brand) #homogénea distribución
 plot(dataFormated$brand, dataFormated$brand) # Porqué esta no me da una diagonal o algo así? No entiendo la representación.
 
 #hay colunmas correlacionadas?
-cor(dataFormated[c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas. No incluyo las categóricas.
-
+cor(dataFormated[,c(-3, -4, -5, -7)])  #limpia. No hay columnas correlacionadas. No incluyo las categóricas.
+cor(dataRaw[])
+cor(dataRaw[,c(1,2,7)])
 
 #### 3.2 Using createDataPartition create training and testing sets.  ####
 # These will be created from the Survey Responses Complete.csv file. The 
@@ -238,3 +246,7 @@ DecisionTreeModel <- train(brand ~.,
 
 source("rf998y1234.R", echo = TRUE)
 source("knn998y1234.R", echo = TRUE)
+
+
+
+

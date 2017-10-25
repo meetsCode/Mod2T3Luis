@@ -2,6 +2,7 @@
 #run me: source("rf998y1234.R", echo = TRUE)
 
 
+tardaRF <- proc.time()  
 #### calculadon modelos de Random Forest ####
 set.seed(998)
 trainPosition <- createDataPartition(dataFormated$brand, p = .75, list = FALSE)
@@ -45,7 +46,7 @@ modelRF1234 <- train(brand ~.,
 examenModeloRF1234 <- predict(modelRF1234, testSet)  #make predictions
 postResample(examenModeloRF1234, testSet$brand)  #performace measurment
 
-
+tardaRF <- proc.time() - tardaRF
 #### resultados modelRF1234 ####
 
 # > modelRF1234

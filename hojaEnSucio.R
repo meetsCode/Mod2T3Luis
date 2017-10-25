@@ -586,3 +586,18 @@ pander( head(dataFormated) , style="rmarkdown", caption="Original diagnosis freq
 edaPlot(trainSet)
 
 #### capitulo  ####
+
+library(C50)
+modelo_C5.0 <- C5.0(training[1:7500,-7],training$brand)
+modelo_C5.0
+summary(modelo_C5.0)
+modelo_C5.0 <- C5.0(training[1:7500,c(-3,-4,-5,-6,-7)],training$brand)
+plot(modelo_C5.0)
+modelo_C5.0.0 <- C5.0(formula=training$brand~.,data=training)
+test_C5.0 <- predict(modelo_C5.0.0, testing, interval= "predict", level=.95)
+test_C5.0 <- predict(modelo_C5.0.0, SurveyIncomplete, interval= "predict", level=.95)
+SurveyIncomplete$brand <- test_C5.0
+<<<Se me olvidó apuntar lo que hice luego. Debió ser pegar ambos data.frames y al nuevo lo llamé TODO7. Para pegarlos... rbind(data1, data2)
+TODO7_C50 <- C5.0(TODO7[,c(-3,-4,-5,-6,-7)],TODO7$brand)
+plot(TODO7_C50)
+

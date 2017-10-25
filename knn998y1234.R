@@ -1,7 +1,7 @@
 #!Rscript
 #run me: source("knn998y1234.R", echo = TRUE)
 
-
+tardaknn <- proc.time()
 #### calculando models knnModel 998 y 1234 ####
 set.seed(998)
 trainPosition <- createDataPartition(dataFormated$brand, p = .75, list = FALSE)
@@ -44,6 +44,7 @@ examenModelo1234 <- predict(knnModel1234, testSet)  #make predictions
 postResample(examenModelo1234, testSet$brand)  #performace measurment
 
 
+tardaknn <- proc.time() - tardaknn
 #### resultados knnModel1234 ####
 # 
 # > knnModel1234
